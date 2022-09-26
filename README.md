@@ -35,11 +35,7 @@ open http://localhost:8000
 import Portal from 'rc-portal';
 
 const Demo = () => {
-  return (
-    <Portal open>
-      Hello World
-    </Portal>
-  );
+  return <Portal open>Hello World</Portal>;
 };
 
 export default Demo;
@@ -51,6 +47,6 @@ We use typescript to create the Type definition. You can view directly in IDE. B
 
 ### Portal
 
-| Prop             | Description                                        | Type                                         | Default          |
-| ---------------- | -------------------------------------------------- | -------------------------------------------- | ---------------- |
-| component        | Customize Form render component                    | string \| Component \| false                 | form             |
+| Prop      | Description                     | Type                         | Default |
+| --------- | ------------------------------- | ---------------------------- | ------- |
+| component | Customize Form render component | string \| Component \| false | form    |

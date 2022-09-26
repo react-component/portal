@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { updateCSS, removeCSS } from '../../Dom/dynamicCSS';
-import getScrollBarSize from '../../getScrollBarSize';
+import { updateCSS, removeCSS } from 'rc-util/lib/Dom/dynamicCSS';
+import getScrollBarSize from 'rc-util/lib/getScrollBarSize';
 
 let lockCount = 0;
 let locked = false;

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import useLayoutEffect from '../../hooks/useLayoutEffect';
+import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import OrderContext from './Context';
 import type { QueueCreate } from './Context';
 
