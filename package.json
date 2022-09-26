@@ -1,5 +1,5 @@
 {
-  "name": "rc-component/portal",
+  "name": "@rc-component/portal",
   "version": "0.0.0",
   "description": "React Portal Component",
   "keywords": [
@@ -41,7 +41,7 @@
     "watch": "father dev"
   },
   "dependencies": {
-    "@babel/runtime": "^7.19.0",
+    "@babel/runtime": "^7.18.0",
     "rc-util": "^5.8.0"
   },
   "devDependencies": {
