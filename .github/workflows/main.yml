@@ -65,8 +65,8 @@ jobs:
       - name: lint
         run: npm run lint
 
-      - name: type:check
-        run: npm run type:check
+      - name: ts check
+        run: npm run lint:tsc
 
     needs: setup
 
