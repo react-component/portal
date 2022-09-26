@@ -47,6 +47,8 @@ We use typescript to create the Type definition. You can view directly in IDE. B
 
 ### Portal
 
-| Prop      | Description                     | Type                         | Default |
-| --------- | ------------------------------- | ---------------------------- | ------- |
-| component | Customize Form render component | string \| Component \| false | form    |
+| Prop         | Description                        | Type                     | Default       |
+| ------------ | ---------------------------------- | ------------------------ | ------------- |
+| getContainer | Customize portal container element | Element \| () => Element | document.body |
+| open         | Show the portal                    | boolean                  | false         |
+| autoLock     | Lock screen scroll when open       | boolean                  | false         |
