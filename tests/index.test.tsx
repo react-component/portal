@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import Portal from '../src/React/Portal';
+import Portal from '../src';
 
 describe('Portal', () => {
   it('Order', () => {
