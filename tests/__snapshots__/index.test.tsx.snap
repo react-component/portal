@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Portal getContainer false 1`] = `
+<div>
+  Hello
+  Bamboo
+  Light
+</div>
+`;

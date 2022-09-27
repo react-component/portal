@@ -24,4 +24,37 @@ describe('Portal', () => {
       'Children',
     ]);
   });
+
+  describe('getContainer', () => {
+    it('false', () => {
+      const { container } = render(
+        <>
+          Hello
+          <Portal open getContainer={false}>
+            Bamboo
+          </Portal>
+          Light
+        </>,
+      );
+
+      expect(container).toMatchSnapshot();
+    });
+
+    it('customize', () => {
+      const Demo = () => {
+        const divRef = React.useRef();
+
+        return (
+          <div ref={divRef} className="holder">
+            <Portal open getContainer={() => divRef.current}>
+              Bamboo
+            </Portal>
+          </div>
+        );
+      };
+
+      const { container } = render(<Demo />);
+      expect(container).toMatchSnapshot();
+    });
+  });
 });

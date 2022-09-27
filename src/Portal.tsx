@@ -8,7 +8,11 @@ import { inlineMock } from './mock';
 
 export type ContainerType = Element | DocumentFragment;
 
-export type GetContainer = string | ContainerType | (() => ContainerType);
+export type GetContainer =
+  | string
+  | ContainerType
+  | (() => ContainerType)
+  | false;
 
 export interface PortalProps {
   /** Customize container element. Default will create a div in document.body when `open` */
@@ -21,6 +25,10 @@ export interface PortalProps {
 }
 
 const getPortalContainer = (getContainer: GetContainer) => {
+  if (getContainer === false) {
+    return false;
+  }
+
   if (!canUseDom()) {
     return null;
   }
@@ -52,7 +60,7 @@ export default function Portal(props: PortalProps) {
   const [defaultContainer, queueCreate] = useDom(
     mergedRender && !customizeContainer,
   );
-  const mergedContainer = customizeContainer || defaultContainer;
+  const mergedContainer = customizeContainer ?? defaultContainer;
 
   // ========================= Render ==========================
   // Do not render when nothing need render
@@ -60,10 +68,12 @@ export default function Portal(props: PortalProps) {
     return null;
   }
 
-  console.log(inlineMock());
+  // Render inline
+  const renderInline = mergedContainer === false || inlineMock();
+
   return (
     <OrderContext.Provider value={queueCreate}>
-      {inlineMock() ? children : createPortal(children, mergedContainer)}
+      {renderInline ? children : createPortal(children, mergedContainer)}
     </OrderContext.Provider>
   );
 }
