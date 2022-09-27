@@ -1,5 +1,8 @@
 import * as React from 'react';
 import { updateCSS, removeCSS } from 'rc-util/lib/Dom/dynamicCSS';
+import useLayoutEffect, {
+  useLayoutUpdateEffect,
+} from 'rc-util/lib/hooks/useLayoutEffect';
 import getScrollBarSize from 'rc-util/lib/getScrollBarSize';
 
 let lockCount = 0;
@@ -9,6 +12,7 @@ const UNIQUE_ID = `rc-util-locker-${Date.now()}`;
 
 function syncLocker() {
   const nextLocked = lockCount > 0;
+
   if (locked !== nextLocked) {
     locked = nextLocked;
 
@@ -29,20 +33,31 @@ html body {
 }
 
 export default function useScrollLocker(lock?: boolean) {
-  React.useLayoutEffect(() => {
-    if (lock) {
+  const mergedLock = !!lock;
+
+  // Init only check lock
+  useLayoutEffect(() => {
+    if (mergedLock) {
+      lockCount += 1;
+      syncLocker();
+    }
+  }, []);
+
+  // Update will both check the lock state
+  useLayoutUpdateEffect(() => {
+    if (mergedLock) {
       lockCount += 1;
       syncLocker();
     } else {
       lockCount -= 1;
       syncLocker();
     }
-  }, [lock]);
+  }, [mergedLock]);
 
-  const lockRef = React.useRef(lock);
-  lockRef.current = lock;
+  const lockRef = React.useRef(mergedLock);
+  lockRef.current = mergedLock;
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     return () => {
       if (lockRef.current) {
         lockCount -= 1;

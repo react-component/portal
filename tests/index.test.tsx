@@ -68,4 +68,40 @@ describe('Portal', () => {
       expect(renderTimes).toEqual(1);
     });
   });
+
+  describe('dynamic change autoLock', () => {
+    function test(name: string, config?: Parameters<typeof render>[1]) {
+      it(name, () => {
+        const { rerender } = render(<Portal open />, config);
+        expect(document.body).not.toHaveStyle({
+          overflowY: 'hidden',
+        });
+
+        rerender(<Portal open autoLock />);
+        expect(document.body).toHaveStyle({
+          overflowY: 'hidden',
+        });
+
+        rerender(<Portal open={false} autoLock />);
+        expect(document.body).not.toHaveStyle({
+          overflowY: 'hidden',
+        });
+
+        rerender(<Portal open autoLock />);
+        expect(document.body).toHaveStyle({
+          overflowY: 'hidden',
+        });
+
+        rerender(<Portal open autoLock={false} />);
+        expect(document.body).not.toHaveStyle({
+          overflowY: 'hidden',
+        });
+      });
+    }
+
+    test('basic');
+    test('StrictMode', {
+      wrapper: React.StrictMode,
+    });
+  });
 });
