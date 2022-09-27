@@ -40,14 +40,24 @@ describe('Portal', () => {
       expect(container).toMatchSnapshot();
     });
 
-    it('customize', () => {
+    it('customize in same level', () => {
+      let renderTimes = 0;
+
+      const Content = () => {
+        React.useEffect(() => {
+          renderTimes += 1;
+        });
+
+        return <>Bamboo</>;
+      };
+
       const Demo = () => {
         const divRef = React.useRef();
 
         return (
           <div ref={divRef} className="holder">
             <Portal open getContainer={() => divRef.current}>
-              Bamboo
+              <Content />
             </Portal>
           </div>
         );
@@ -55,6 +65,7 @@ describe('Portal', () => {
 
       const { container } = render(<Demo />);
       expect(container).toMatchSnapshot();
+      expect(renderTimes).toEqual(1);
     });
   });
 });

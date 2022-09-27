@@ -55,16 +55,26 @@ export default function Portal(props: PortalProps) {
   }, [open]);
 
   // ======================== Container ========================
-  const customizeContainer = getPortalContainer(getContainer);
+  const [innerContainer, setInnerContainer] = React.useState<
+    ContainerType | false
+  >(() => getPortalContainer(getContainer));
+
+  React.useEffect(() => {
+    const customizeContainer = getPortalContainer(getContainer);
+
+    // Tell component that we check this in effect which is safe to be `null`
+    setInnerContainer(customizeContainer ?? null);
+  });
 
   const [defaultContainer, queueCreate] = useDom(
-    mergedRender && !customizeContainer,
+    mergedRender && !innerContainer,
   );
-  const mergedContainer = customizeContainer ?? defaultContainer;
+  const mergedContainer = innerContainer ?? defaultContainer;
 
   // ========================= Render ==========================
   // Do not render when nothing need render
-  if (!mergedRender || !canUseDom()) {
+  // When innerContainer is `undefined`, it may not ready since user use ref in the same render
+  if (!mergedRender || !canUseDom() || innerContainer === undefined) {
     return null;
   }
 
