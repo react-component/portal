@@ -1,13 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Portal getContainer customize 1`] = `
-<div>
-  <div
-    class="holder"
-  />
-</div>
-`;
-
 exports[`Portal getContainer customize in same level 1`] = `
 <div>
   <div

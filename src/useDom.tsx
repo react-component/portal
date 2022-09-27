@@ -9,9 +9,17 @@ const EMPTY_LIST = [];
  * Will add `div` to document. Nest call will keep order
  * @param render Render DOM in document
  */
-export default function useDom(render: boolean): [HTMLDivElement, QueueCreate] {
+export default function useDom(
+  render: boolean,
+  debug?: string,
+): [HTMLDivElement, QueueCreate] {
   const [ele] = React.useState(() => {
     const defaultEle = document.createElement('div');
+
+    if (process.env.NODE_ENV !== 'production' && debug) {
+      defaultEle.setAttribute('data-debug', debug);
+    }
+
     return defaultEle;
   });
 
@@ -22,7 +30,10 @@ export default function useDom(render: boolean): [HTMLDivElement, QueueCreate] {
   const mergedQueueCreate =
     queueCreate ||
     ((appendFn: VoidFunction) => {
-      setQueue(origin => [appendFn, ...origin]);
+      setQueue(origin => {
+        const newQueue = [appendFn, ...origin];
+        return newQueue;
+      });
     });
 
   // =========================== DOM ===========================

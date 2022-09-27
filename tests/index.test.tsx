@@ -5,11 +5,11 @@ import Portal from '../src';
 describe('Portal', () => {
   it('Order', () => {
     render(
-      <Portal open>
+      <Portal open debug="root">
         <p>Root</p>
-        <Portal open>
+        <Portal open debug="parent">
           <p>Parent</p>
-          <Portal open>
+          <Portal open debug="children">
             <p>Children</p>
           </Portal>
         </Portal>

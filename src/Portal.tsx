@@ -22,6 +22,9 @@ export interface PortalProps {
   open?: boolean;
   /** Lock screen scroll when open */
   autoLock?: boolean;
+
+  /** @private debug name. Do not use in prod */
+  debug?: string;
 }
 
 const getPortalContainer = (getContainer: GetContainer) => {
@@ -29,7 +32,7 @@ const getPortalContainer = (getContainer: GetContainer) => {
     return false;
   }
 
-  if (!canUseDom()) {
+  if (!canUseDom() || !getContainer) {
     return null;
   }
 
@@ -43,7 +46,7 @@ const getPortalContainer = (getContainer: GetContainer) => {
 };
 
 export default function Portal(props: PortalProps) {
-  const { open, autoLock, getContainer, children } = props;
+  const { open, autoLock, getContainer, debug, children } = props;
 
   const [mergedRender, setMergedRender] = React.useState(open);
 
@@ -68,6 +71,7 @@ export default function Portal(props: PortalProps) {
 
   const [defaultContainer, queueCreate] = useDom(
     mergedRender && !innerContainer,
+    debug,
   );
   const mergedContainer = innerContainer ?? defaultContainer;
 
