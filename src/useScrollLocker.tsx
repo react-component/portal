@@ -4,6 +4,7 @@ import useLayoutEffect, {
   useLayoutUpdateEffect,
 } from 'rc-util/lib/hooks/useLayoutEffect';
 import getScrollBarSize from 'rc-util/lib/getScrollBarSize';
+import { isBodyOverflowing } from './util';
 
 let lockCount = 0;
 let locked = false;
@@ -18,11 +19,13 @@ function syncLocker() {
 
     if (locked) {
       const scrollbarSize = getScrollBarSize();
+      const isOverflow = isBodyOverflowing();
+
       updateCSS(
         `
 html body {
   overflow-y: hidden;
-  width: calc(100% - ${scrollbarSize}px);
+  ${isOverflow ? `width: calc(100% - ${scrollbarSize}px);` : ''}
 }`,
         UNIQUE_ID,
       );

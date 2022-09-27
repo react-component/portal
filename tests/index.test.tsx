@@ -2,7 +2,21 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import Portal from '../src';
 
+global.isOverflow = true;
+
+jest.mock('../src/util', () => {
+  const origin = jest.requireActual('../src/util');
+  return {
+    ...origin,
+    isBodyOverflowing: () => global.isOverflow,
+  };
+});
+
 describe('Portal', () => {
+  beforeEach(() => {
+    global.isOverflow = true;
+  });
+
   it('Order', () => {
     render(
       <Portal open debug="root">
@@ -102,6 +116,15 @@ describe('Portal', () => {
     test('basic');
     test('StrictMode', {
       wrapper: React.StrictMode,
+    });
+
+    it('window not scrollable', () => {
+      global.isOverflow = false;
+      render(<Portal open />);
+
+      expect(document.body).not.toHaveStyle({
+        overflowY: 'hidden',
+      });
     });
   });
 });
