@@ -127,4 +127,23 @@ describe('Portal', () => {
       });
     });
   });
+
+  it('autoDestroy', () => {
+    expect(document.querySelector('p')).toBeFalsy();
+
+    const renderDemo = (open: boolean, autoDestroy: boolean) => (
+      <Portal open={open} autoDestroy={autoDestroy}>
+        <p>Root</p>
+      </Portal>
+    );
+
+    const { rerender } = render(renderDemo(true, false));
+    expect(document.querySelector('p')).toBeTruthy();
+
+    rerender(renderDemo(false, false));
+    expect(document.querySelector('p')).toBeTruthy();
+
+    rerender(renderDemo(false, true));
+    expect(document.querySelector('p')).toBeFalsy();
+  });
 });

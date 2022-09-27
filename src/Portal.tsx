@@ -20,6 +20,8 @@ export interface PortalProps {
   children?: React.ReactNode;
   /** Show the portal children */
   open?: boolean;
+  /** Remove `children` when `open` is `false`. Set `false` will not handle remove process */
+  autoDestroy?: boolean;
   /** Lock screen scroll when open */
   autoLock?: boolean;
 
@@ -46,7 +48,14 @@ const getPortalContainer = (getContainer: GetContainer) => {
 };
 
 export default function Portal(props: PortalProps) {
-  const { open, autoLock, getContainer, debug, children } = props;
+  const {
+    open,
+    autoLock,
+    getContainer,
+    debug,
+    autoDestroy = true,
+    children,
+  } = props;
 
   const [mergedRender, setMergedRender] = React.useState(open);
 
@@ -54,8 +63,10 @@ export default function Portal(props: PortalProps) {
 
   // ====================== Should Render ======================
   React.useEffect(() => {
-    setMergedRender(open);
-  }, [open]);
+    if (autoDestroy || open) {
+      setMergedRender(open);
+    }
+  }, [open, autoDestroy]);
 
   // ======================== Container ========================
   const [innerContainer, setInnerContainer] = React.useState<
