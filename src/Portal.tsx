@@ -8,7 +8,11 @@ import { inlineMock } from './mock';
 
 export type ContainerType = Element | DocumentFragment;
 
-export type GetContainer = string | ContainerType | (() => ContainerType);
+export type GetContainer =
+  | string
+  | ContainerType
+  | (() => ContainerType)
+  | false;
 
 export interface PortalProps {
   /** Customize container element. Default will create a div in document.body when `open` */
@@ -18,10 +22,17 @@ export interface PortalProps {
   open?: boolean;
   /** Lock screen scroll when open */
   autoLock?: boolean;
+
+  /** @private debug name. Do not use in prod */
+  debug?: string;
 }
 
 const getPortalContainer = (getContainer: GetContainer) => {
-  if (!canUseDom()) {
+  if (getContainer === false) {
+    return false;
+  }
+
+  if (!canUseDom() || !getContainer) {
     return null;
   }
 
@@ -35,7 +46,7 @@ const getPortalContainer = (getContainer: GetContainer) => {
 };
 
 export default function Portal(props: PortalProps) {
-  const { open, autoLock, getContainer, children } = props;
+  const { open, autoLock, getContainer, debug, children } = props;
 
   const [mergedRender, setMergedRender] = React.useState(open);
 
@@ -47,23 +58,36 @@ export default function Portal(props: PortalProps) {
   }, [open]);
 
   // ======================== Container ========================
-  const customizeContainer = getPortalContainer(getContainer);
+  const [innerContainer, setInnerContainer] = React.useState<
+    ContainerType | false
+  >(() => getPortalContainer(getContainer));
+
+  React.useEffect(() => {
+    const customizeContainer = getPortalContainer(getContainer);
+
+    // Tell component that we check this in effect which is safe to be `null`
+    setInnerContainer(customizeContainer ?? null);
+  });
 
   const [defaultContainer, queueCreate] = useDom(
-    mergedRender && !customizeContainer,
+    mergedRender && !innerContainer,
+    debug,
   );
-  const mergedContainer = customizeContainer || defaultContainer;
+  const mergedContainer = innerContainer ?? defaultContainer;
 
   // ========================= Render ==========================
   // Do not render when nothing need render
-  if (!mergedRender || !canUseDom()) {
+  // When innerContainer is `undefined`, it may not ready since user use ref in the same render
+  if (!mergedRender || !canUseDom() || innerContainer === undefined) {
     return null;
   }
 
-  console.log(inlineMock());
+  // Render inline
+  const renderInline = mergedContainer === false || inlineMock();
+
   return (
     <OrderContext.Provider value={queueCreate}>
-      {inlineMock() ? children : createPortal(children, mergedContainer)}
+      {renderInline ? children : createPortal(children, mergedContainer)}
     </OrderContext.Provider>
   );
 }
