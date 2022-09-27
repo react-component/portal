@@ -1,21 +1,38 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
+import canUseDom from 'rc-util/lib/Dom/canUseDom';
 import OrderContext from './Context';
 import useDom from './useDom';
 import useScrollLocker from './useScrollLocker';
+import { inlineMock } from './mock';
 
-// ZombieJ: Since React 18 strict mode logic change.
-//          We should rewrite for compatible.
+export type ContainerType = Element | DocumentFragment;
+
+export type GetContainer = string | ContainerType | (() => ContainerType);
 
 export interface PortalProps {
   /** Customize container element. Default will create a div in document.body when `open` */
-  getContainer?: () => Element | DocumentFragment;
+  getContainer?: GetContainer;
   children?: React.ReactNode;
   /** Show the portal children */
   open?: boolean;
   /** Lock screen scroll when open */
   autoLock?: boolean;
 }
+
+const getPortalContainer = (getContainer: GetContainer) => {
+  if (!canUseDom()) {
+    return null;
+  }
+
+  if (typeof getContainer === 'string') {
+    return document.querySelector(getContainer);
+  }
+  if (typeof getContainer === 'function') {
+    return getContainer();
+  }
+  return getContainer;
+};
 
 export default function Portal(props: PortalProps) {
   const { open, autoLock, getContainer, children } = props;
@@ -30,7 +47,7 @@ export default function Portal(props: PortalProps) {
   }, [open]);
 
   // ======================== Container ========================
-  const customizeContainer = getContainer?.();
+  const customizeContainer = getPortalContainer(getContainer);
 
   const [defaultContainer, queueCreate] = useDom(
     mergedRender && !customizeContainer,
@@ -39,13 +56,14 @@ export default function Portal(props: PortalProps) {
 
   // ========================= Render ==========================
   // Do not render when nothing need render
-  if (!mergedRender) {
+  if (!mergedRender || !canUseDom()) {
     return null;
   }
 
+  console.log(inlineMock());
   return (
     <OrderContext.Provider value={queueCreate}>
-      {createPortal(children, mergedContainer)}
+      {inlineMock() ? children : createPortal(children, mergedContainer)}
     </OrderContext.Provider>
   );
 }
