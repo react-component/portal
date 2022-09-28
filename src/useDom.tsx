@@ -1,5 +1,6 @@
 import * as React from 'react';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
+import canUseDom from 'rc-util/lib/Dom/canUseDom';
 import OrderContext from './Context';
 import type { QueueCreate } from './Context';
 
@@ -14,6 +15,10 @@ export default function useDom(
   debug?: string,
 ): [HTMLDivElement, QueueCreate] {
   const [ele] = React.useState(() => {
+    if (!canUseDom()) {
+      return null;
+    }
+
     const defaultEle = document.createElement('div');
 
     if (process.env.NODE_ENV !== 'production' && debug) {
