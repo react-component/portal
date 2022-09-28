@@ -1,5 +1,7 @@
 import React, { version } from 'react';
+import classNames from 'classnames';
 import Portal from '../../src';
+import './basic.less';
 
 export default () => {
   const [show, setShow] = React.useState(true);
@@ -16,46 +18,41 @@ export default () => {
   );
 
   const getContainer = customizeContainer ? () => divRef.current : undefined;
+  const contentCls = customizeContainer ? '' : 'abs';
 
   return (
     <React.StrictMode>
-      <div style={{ border: '2px solid red' }}>
-        Real Version: {version}
-        <button onClick={() => setShow(!show)}>show: {show.toString()}</button>
-        <button onClick={() => setCustomizeContainer(!customizeContainer)}>
-          customize container: {customizeContainer.toString()}
-        </button>
-        <button onClick={() => setLock(!lock)}>
-          lock scroll: {lock.toString()}
-        </button>
-        <div
-          id="customize"
-          ref={divRef}
-          style={{ border: '1px solid green', minHeight: 10 }}
-        />
-      </div>
+      <div style={{ height: '200vh' }}>
+        <div style={{ border: '2px solid red' }}>
+          Real Version: {version}
+          <button onClick={() => setShow(!show)}>
+            show: {show.toString()}
+          </button>
+          <button onClick={() => setCustomizeContainer(!customizeContainer)}>
+            customize container: {customizeContainer.toString()}
+          </button>
+          <button onClick={() => setLock(!lock)}>
+            lock scroll: {lock.toString()}
+          </button>
+          <div
+            id="customize"
+            ref={divRef}
+            style={{ border: '1px solid green', minHeight: 10 }}
+          />
+        </div>
 
-      <Portal open={show} getContainer={getContainer} autoLock={lock}>
-        <p>Hello Root</p>
         <Portal open={show} getContainer={getContainer} autoLock={lock}>
-          <p>Hello Parent</p>
+          <p className={classNames(contentCls, 'root')}>Hello Root</p>
           <Portal open={show} getContainer={getContainer} autoLock={lock}>
-            <p>Hello Children</p>
+            <p className={classNames(contentCls, 'parent')}>Hello Parent</p>
+            <Portal open={show} getContainer={getContainer} autoLock={lock}>
+              <p className={classNames(contentCls, 'children')}>
+                Hello Children
+              </p>
+            </Portal>
           </Portal>
         </Portal>
-      </Portal>
-
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          height: '200vh',
-          width: 1,
-          background: 'yellow',
-          zIndex: -1,
-        }}
-      />
+      </div>
     </React.StrictMode>
   );
 };
