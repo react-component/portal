@@ -8,7 +8,9 @@ const UNIQUE_ID = `rc-util-locker-${Date.now()}`;
 
 let uuid = 0;
 
-export default function useScrollLocker(lock?: boolean) {
+export default function useScrollLocker(
+  lock?: boolean,
+) {
   const mergedLock = !!lock;
   const [id] = React.useState(() => {
     uuid += 1;

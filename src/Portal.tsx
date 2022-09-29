@@ -59,8 +59,6 @@ export default function Portal(props: PortalProps) {
 
   const [mergedRender, setMergedRender] = React.useState(open);
 
-  useScrollLocker(autoLock && open);
-
   // ====================== Should Render ======================
   React.useEffect(() => {
     if (autoDestroy || open) {
@@ -85,6 +83,15 @@ export default function Portal(props: PortalProps) {
     debug,
   );
   const mergedContainer = innerContainer ?? defaultContainer;
+
+  // ========================= Locker ==========================
+  useScrollLocker(
+    autoLock &&
+      open &&
+      canUseDom() &&
+      (mergedContainer === defaultContainer ||
+        mergedContainer === document.body),
+  );
 
   // ========================= Render ==========================
   // Do not render when nothing need render

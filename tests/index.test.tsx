@@ -126,6 +126,32 @@ describe('Portal', () => {
         overflowY: 'hidden',
       });
     });
+
+    it('not lock screen when getContainer is not body', () => {
+      const div = document.createElement('div');
+      document.body.appendChild(div);
+      render(
+        <Portal open autoLock getContainer={() => div}>
+          Bamboo
+        </Portal>,
+      );
+
+      expect(document.body).not.toHaveStyle({
+        overflowY: 'hidden',
+      });
+    });
+
+    it('lock when getContainer give document.body', () => {
+      render(
+        <Portal open autoLock getContainer={() => document.body}>
+          Bamboo
+        </Portal>,
+      );
+
+      expect(document.body).toHaveStyle({
+        overflowY: 'hidden',
+      });
+    });
   });
 
   it('autoDestroy', () => {
