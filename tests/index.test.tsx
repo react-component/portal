@@ -172,4 +172,52 @@ describe('Portal', () => {
     rerender(renderDemo(false, true));
     expect(document.querySelector('p')).toBeFalsy();
   });
+
+  describe.only('ref-able', () => {
+    it('support forwardRef', () => {
+      const elementRef = React.createRef<HTMLParagraphElement>();
+      const portalRef = React.createRef();
+
+      render(
+        <Portal ref={portalRef} open>
+          <p ref={elementRef}>Bamboo</p>
+        </Portal>,
+      );
+
+      expect(elementRef.current).toBe(document.querySelector('p'));
+      expect(portalRef.current).toBe(document.querySelector('p'));
+    });
+
+    it('not support fragment', () => {
+      const elementRef = React.createRef<HTMLParagraphElement>();
+      const portalRef = React.createRef();
+
+      render(
+        <Portal ref={portalRef} open>
+          <>
+            <p ref={elementRef}>Bamboo</p>
+          </>
+        </Portal>,
+      );
+
+      expect(elementRef.current).toBe(document.querySelector('p'));
+      expect(portalRef.current).toBeFalsy();
+    });
+
+    it('not support FC', () => {
+      const elementRef = React.createRef<HTMLParagraphElement>();
+      const portalRef = React.createRef();
+
+      const P = (props: any) => <p {...props} />;
+
+      render(
+        <Portal ref={portalRef} open>
+          <P ref={elementRef}>Bamboo</P>
+        </Portal>,
+      );
+
+      expect(elementRef.current).toBeFalsy();
+      expect(portalRef.current).toBeFalsy();
+    });
+  });
 });

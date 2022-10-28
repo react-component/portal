@@ -39,7 +39,7 @@
     "test": "npm run test:client && npm run test:server",
     "test:client": "umi-test --testPathIgnorePatterns=ssr.test.tsx --testPathIgnorePatterns=ssr.test.tsx",
     "test:coverage": "npm run test:client --coverage",
-    "test:server": "umi-test --env=node tests/ssr.test.tsx",
+    "test:server": "umi-test --env=node -- tests/ssr.test.tsx",
     "watch": "father dev"
   },
   "dependencies": {
