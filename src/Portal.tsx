@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import canUseDom from 'rc-util/lib/Dom/canUseDom';
+import { supportRef, useComposeRef } from 'rc-util/lib/ref';
 import OrderContext from './Context';
 import useDom from './useDom';
 import useScrollLocker from './useScrollLocker';
@@ -47,7 +48,7 @@ const getPortalContainer = (getContainer: GetContainer) => {
   return getContainer;
 };
 
-export default function Portal(props: PortalProps) {
+const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
   const {
     open,
     autoLock,
@@ -93,6 +94,15 @@ export default function Portal(props: PortalProps) {
         mergedContainer === document.body),
   );
 
+  // =========================== Ref ===========================
+  let childRef: React.Ref<any> = null;
+
+  if (children && supportRef(children) && ref) {
+    ({ ref: childRef } = children as any);
+  }
+
+  const mergedRef = useComposeRef(childRef, ref);
+
   // ========================= Render ==========================
   // Do not render when nothing need render
   // When innerContainer is `undefined`, it may not ready since user use ref in the same render
@@ -103,9 +113,24 @@ export default function Portal(props: PortalProps) {
   // Render inline
   const renderInline = mergedContainer === false || inlineMock();
 
+  let reffedChildren = children;
+  if (ref) {
+    reffedChildren = React.cloneElement(children as any, {
+      ref: mergedRef,
+    });
+  }
+
   return (
     <OrderContext.Provider value={queueCreate}>
-      {renderInline ? children : createPortal(children, mergedContainer)}
+      {renderInline
+        ? reffedChildren
+        : createPortal(reffedChildren, mergedContainer)}
     </OrderContext.Provider>
   );
+});
+
+if (process.env.NODE_ENV !== 'production') {
+  Portal.displayName = 'Portal';
 }
+
+export default Portal;
