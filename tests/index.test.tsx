@@ -173,7 +173,7 @@ describe('Portal', () => {
     expect(document.querySelector('p')).toBeFalsy();
   });
 
-  describe.only('ref-able', () => {
+  describe('ref-able', () => {
     it('support forwardRef', () => {
       const elementRef = React.createRef<HTMLParagraphElement>();
       const portalRef = React.createRef();
