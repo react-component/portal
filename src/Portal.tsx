@@ -58,12 +58,14 @@ const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
     children,
   } = props;
 
-  const [mergedRender, setMergedRender] = React.useState(open);
+  const [shouldRender, setShouldRender] = React.useState(open);
+
+  const mergedRender = shouldRender || open;
 
   // ====================== Should Render ======================
   React.useEffect(() => {
     if (autoDestroy || open) {
-      setMergedRender(open);
+      setShouldRender(open);
     }
   }, [open, autoDestroy]);
 
