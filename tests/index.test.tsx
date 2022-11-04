@@ -220,4 +220,33 @@ describe('Portal', () => {
       expect(portalRef.current).toBeFalsy();
     });
   });
+
+  it('first render should ref accessible', () => {
+    let checked = false;
+
+    const Demo = ({ open }: { open?: boolean }) => {
+      const pRef = React.useRef();
+
+      React.useEffect(() => {
+        if (open) {
+          checked = true;
+          expect(pRef.current).toBeTruthy();
+        }
+      }, [open]);
+
+      return (
+        <Portal open={open}>
+          <div>
+            <p ref={pRef} />
+          </div>
+        </Portal>
+      );
+    };
+
+    const { rerender } = render(<Demo />);
+    expect(checked).toBeFalsy();
+
+    rerender(<Demo open />);
+    expect(checked).toBeTruthy();
+  });
 });
