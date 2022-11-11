@@ -15,9 +15,14 @@ export default () => {
       console.log('Demo unmount!!');
     },
     [],
-  );
-
-  const getContainer = customizeContainer ? () => divRef.current : undefined;
+  )
+ 
+  // const getContainer = customizeContainer ? () => divRef.current : undefined;
+  const getContainer = () => {
+    const el = document.createElement('div');
+    document.body.appendChild(el);
+    return el
+  }
   const contentCls = customizeContainer ? '' : 'abs';
 
   return (

@@ -79,7 +79,7 @@ const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
 
     // Tell component that we check this in effect which is safe to be `null`
     setInnerContainer(customizeContainer ?? null);
-  });
+  }, [getContainer]);
 
   const [defaultContainer, queueCreate] = useDom(
     mergedRender && !innerContainer,
