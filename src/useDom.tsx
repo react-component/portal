@@ -31,6 +31,7 @@ export default function useDom(
   // ========================== Order ==========================
   const queueCreate = React.useContext(OrderContext);
   const [queue, setQueue] = React.useState<VoidFunction[]>(EMPTY_LIST);
+  // const queueRef = React.useRef<VoidFunction[]>(EMPTY_LIST);
 
   const mergedQueueCreate =
     queueCreate ||
@@ -39,6 +40,7 @@ export default function useDom(
         const newQueue = [appendFn, ...origin];
         return newQueue;
       });
+      // queueRef.current = [appendFn, ...queueRef.current];
     });
 
   // =========================== DOM ===========================
