@@ -36,16 +36,14 @@ export default function useDom(
 
   const mergedQueueCreate =
     queueCreate ||
-    ((appendFn: VoidFunction) => {
-      if (appendedRef.current) {
-        appendFn();
-      } else {
-        setQueue(origin => {
-          const newQueue = [appendFn, ...origin];
-          return newQueue;
+    (appendedRef.current
+      ? undefined
+      : (appendFn: VoidFunction) => {
+          setQueue(origin => {
+            const newQueue = [appendFn, ...origin];
+            return newQueue;
+          });
         });
-      }
-    });
 
   // =========================== DOM ===========================
   function append() {
