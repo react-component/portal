@@ -1,5 +1,4 @@
 import React, { version } from 'react';
-import classNames from 'classnames';
 import Portal from '../../src';
 import './basic.less';
 

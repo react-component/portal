@@ -29,18 +29,22 @@ export default function useDom(
   });
 
   // ========================== Order ==========================
+  const appendedRef = React.useRef(false);
+
   const queueCreate = React.useContext(OrderContext);
   const [queue, setQueue] = React.useState<VoidFunction[]>(EMPTY_LIST);
-  // const queueRef = React.useRef<VoidFunction[]>(EMPTY_LIST);
 
   const mergedQueueCreate =
     queueCreate ||
     ((appendFn: VoidFunction) => {
-      setQueue(origin => {
-        const newQueue = [appendFn, ...origin];
-        return newQueue;
-      });
-      // queueRef.current = [appendFn, ...queueRef.current];
+      if (appendedRef.current) {
+        appendFn();
+      } else {
+        setQueue(origin => {
+          const newQueue = [appendFn, ...origin];
+          return newQueue;
+        });
+      }
     });
 
   // =========================== DOM ===========================
@@ -48,10 +52,14 @@ export default function useDom(
     if (!ele.parentElement) {
       document.body.appendChild(ele);
     }
+
+    appendedRef.current = true;
   }
 
   function cleanup() {
     ele.parentElement?.removeChild(ele);
+
+    appendedRef.current = false;
   }
 
   useLayoutEffect(() => {
