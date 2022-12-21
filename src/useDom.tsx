@@ -29,27 +29,35 @@ export default function useDom(
   });
 
   // ========================== Order ==========================
+  const appendedRef = React.useRef(false);
+
   const queueCreate = React.useContext(OrderContext);
   const [queue, setQueue] = React.useState<VoidFunction[]>(EMPTY_LIST);
 
   const mergedQueueCreate =
     queueCreate ||
-    ((appendFn: VoidFunction) => {
-      setQueue(origin => {
-        const newQueue = [appendFn, ...origin];
-        return newQueue;
-      });
-    });
+    (appendedRef.current
+      ? undefined
+      : (appendFn: VoidFunction) => {
+          setQueue(origin => {
+            const newQueue = [appendFn, ...origin];
+            return newQueue;
+          });
+        });
 
   // =========================== DOM ===========================
   function append() {
     if (!ele.parentElement) {
       document.body.appendChild(ele);
     }
+
+    appendedRef.current = true;
   }
 
   function cleanup() {
     ele.parentElement?.removeChild(ele);
+
+    appendedRef.current = false;
   }
 
   useLayoutEffect(() => {

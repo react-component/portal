@@ -12,6 +12,12 @@ jest.mock('../src/util', () => {
   };
 });
 
+// Revert `useLayoutEffect` back to real one since we should keep order for test
+jest.mock('rc-util/lib/hooks/useLayoutEffect', () => {
+  const origin = jest.requireActual('react');
+  return origin.useLayoutEffect;
+});
+
 describe('Portal', () => {
   beforeEach(() => {
     global.isOverflow = true;
@@ -248,5 +254,38 @@ describe('Portal', () => {
 
     rerender(<Demo open />);
     expect(checked).toBeTruthy();
+  });
+
+  it('not block if parent already created', () => {
+    const Checker = () => {
+      const divRef = React.useRef<HTMLDivElement>(null);
+      const [inDoc, setInDoc] = React.useState(false);
+
+      React.useEffect(() => {
+        setInDoc(document.contains(divRef.current));
+      }, []);
+
+      return (
+        <div ref={divRef} className="checker">
+          {String(inDoc)}
+        </div>
+      );
+    };
+
+    const Demo = ({ visible }: any) => (
+      <Portal open>
+        {visible && (
+          <Portal open>
+            <Checker />
+          </Portal>
+        )}
+      </Portal>
+    );
+
+    const { rerender } = render(<Demo />);
+
+    rerender(<Demo visible />);
+
+    expect(document.querySelector('.checker').textContent).toEqual('true');
   });
 });
