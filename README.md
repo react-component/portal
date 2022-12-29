@@ -9,7 +9,7 @@ React 18 supported Portal Component.
 [github-actions-image]: https://github.com/react-component/portal/workflows/CI/badge.svg
 [github-actions-url]: https://github.com/react-component/portal/actions
 [codecov-image]: https://img.shields.io/codecov/c/github/react-component/portal/master.svg?style=flat-square
-[codecov-url]: https://codecov.io/gh/react-component/portal/branch/master
+[codecov-url]: https://app.codecov.io/gh/react-component/portal
 [download-image]: https://img.shields.io/npm/dm/rc-portal.svg?style=flat-square
 [download-url]: https://npmjs.org/package/rc-portal
 
