@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import canUseDom from 'rc-util/lib/Dom/canUseDom';
+import warning from 'rc-util/lib/warning';
 import { supportRef, useComposeRef } from 'rc-util/lib/ref';
 import OrderContext from './Context';
 import useDom from './useDom';
@@ -61,6 +62,14 @@ const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
   const [shouldRender, setShouldRender] = React.useState(open);
 
   const mergedRender = shouldRender || open;
+
+  // ========================= Warning =========================
+  if (process.env.NODE_ENV !== 'production') {
+    warning(
+      canUseDom() || !open,
+      `Portal only work in client side. Please call 'useEffect' to show Portal instead default render in SSR.`,
+    );
+  }
 
   // ====================== Should Render ======================
   React.useEffect(() => {
