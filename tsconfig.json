@@ -9,7 +9,7 @@
     "esModuleInterop": true,
     "paths": {
       "@/*": ["src/*"],
-      "@@/*": ["src/.umi/*"],
+      "@@/*": [".dumi/tmp/*"],
       "@rc-component/portal": ["src/Portal.tsx"]
     }
   }
