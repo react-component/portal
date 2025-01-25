@@ -10,7 +10,7 @@ const Content = (): React.ReactElement => {
 };
 
 export default () => {
-  const divRef = React.useRef();
+  const divRef = React.useRef<HTMLDivElement>(null);
 
   return (
     <div
