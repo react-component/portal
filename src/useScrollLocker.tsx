@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { updateCSS, removeCSS } from 'rc-util/lib/Dom/dynamicCSS';
-import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
-import { getTargetScrollBarSize } from 'rc-util/lib/getScrollBarSize';
+import { updateCSS, removeCSS } from '@rc-component/util/lib/Dom/dynamicCSS';
+import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
+import { getTargetScrollBarSize } from '@rc-component/util/lib/getScrollBarSize';
 import { isBodyOverflowing } from './util';
 
-const UNIQUE_ID = `rc-util-locker-${Date.now()}`;
+const UNIQUE_ID = `@rc-component/util-locker-${Date.now()}`;
 
 let uuid = 0;
 
-export default function useScrollLocker(lock?: boolean) {
+const useScrollLocker = (lock?: boolean) => {
   const mergedLock = !!lock;
   const [id] = React.useState(() => {
     uuid += 1;
@@ -36,4 +36,6 @@ html body {
       removeCSS(id);
     };
   }, [mergedLock, id]);
-}
+};
+
+export default useScrollLocker;

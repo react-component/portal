@@ -1,19 +1,19 @@
 import * as React from 'react';
-import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
-import canUseDom from 'rc-util/lib/Dom/canUseDom';
+import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
+import canUseDom from '@rc-component/util/lib/Dom/canUseDom';
 import OrderContext from './Context';
 import type { QueueCreate } from './Context';
 
-const EMPTY_LIST = [];
+const EMPTY_LIST: VoidFunction[] = [];
 
 /**
  * Will add `div` to document. Nest call will keep order
  * @param render Render DOM in document
  */
-export default function useDom(
+const useDom = (
   render: boolean,
   debug?: string,
-): [HTMLDivElement, QueueCreate] {
+): [HTMLDivElement, QueueCreate] => {
   const [ele] = React.useState(() => {
     if (!canUseDom()) {
       return null;
@@ -82,4 +82,6 @@ export default function useDom(
   }, [queue]);
 
   return [ele, mergedQueueCreate];
-}
+};
+
+export default useDom;

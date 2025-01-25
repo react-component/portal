@@ -13,7 +13,7 @@ jest.mock('../src/util', () => {
 });
 
 // Revert `useLayoutEffect` back to real one since we should keep order for test
-jest.mock('rc-util/lib/hooks/useLayoutEffect', () => {
+jest.mock('@rc-component/util/lib/hooks/useLayoutEffect', () => {
   const origin = jest.requireActual('react');
   return origin.useLayoutEffect;
 });
