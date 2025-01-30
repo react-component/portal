@@ -13,7 +13,7 @@ jest.mock('../src/util', () => {
 });
 
 // Revert `useLayoutEffect` back to real one since we should keep order for test
-jest.mock('rc-util/lib/hooks/useLayoutEffect', () => {
+jest.mock('@rc-component/util/lib/hooks/useLayoutEffect', () => {
   const origin = jest.requireActual('react');
   return origin.useLayoutEffect;
 });
@@ -72,7 +72,7 @@ describe('Portal', () => {
       };
 
       const Demo = () => {
-        const divRef = React.useRef();
+        const divRef = React.useRef<HTMLDivElement>(null);
 
         return (
           <div ref={divRef} className="holder">
@@ -231,7 +231,7 @@ describe('Portal', () => {
     let checked = false;
 
     const Demo = ({ open }: { open?: boolean }) => {
-      const pRef = React.useRef();
+      const pRef = React.useRef<HTMLParagraphElement>(null);
 
       React.useEffect(() => {
         if (open) {
