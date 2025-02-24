@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import canUseDom from 'rc-util/lib/Dom/canUseDom';
-import warning from 'rc-util/lib/warning';
-import { supportRef, useComposeRef } from 'rc-util/lib/ref';
+import canUseDom from '@rc-component/util/lib/Dom/canUseDom';
+import warning from '@rc-component/util/lib/warning';
+import { supportRef, useComposeRef } from '@rc-component/util/lib/ref';
 import OrderContext from './Context';
 import useDom from './useDom';
 import useScrollLocker from './useScrollLocker';

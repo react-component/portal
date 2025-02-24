@@ -1,6 +1,6 @@
 {
   "name": "@rc-component/portal",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "description": "React Portal Component",
   "keywords": [
     "react",
@@ -27,29 +27,29 @@
   ],
   "scripts": {
     "compile": "father build",
-    "prepare": "dumi setup",
     "deploy": "npm run docs:build && npm run docs:deploy",
     "docs:build": "dumi build",
     "docs:deploy": "gh-pages -d docs-dist",
     "lint": "eslint src/ --ext .tsx,.ts",
     "lint:tsc": "tsc -p tsconfig.json --noEmit",
     "now-build": "npm run docs:build",
-    "prepublishOnly": "npm run compile && np --no-cleanup --yolo --no-publish",
+    "prepare": "dumi setup",
+    "prepublishOnly": "npm run compile && rc-np",
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "start": "dumi dev",
     "test": "npm run test:server && npm run test:coverage",
-    "test:client": "umi-test --testPathIgnorePatterns=ssr.test.tsx --testPathIgnorePatterns=ssr.test.tsx",
+    "test:client": "rc-test --testPathIgnorePatterns=ssr.test.tsx --testPathIgnorePatterns=ssr.test.tsx",
     "test:coverage": "npm run test:client -- --coverage",
-    "test:server": "umi-test --env=node -- tests/ssr.test.tsx",
+    "test:server": "rc-test --env=node -- tests/ssr.test.tsx",
     "watch": "father dev"
   },
   "dependencies": {
-    "@babel/runtime": "^7.18.0",
-    "classnames": "^2.3.2",
-    "rc-util": "^5.24.4"
+    "@rc-component/util": "^1.2.1",
+    "classnames": "^2.3.2"
   },
   "devDependencies": {
-    "@rc-component/father-plugin": "^1.0.0",
+    "@rc-component/father-plugin": "^2.0.2",
+    "@rc-component/np": "^1.0.3",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.0.0",
     "@types/jest": "^26.0.20",
@@ -62,19 +62,17 @@
     "father": "^4.0.0",
     "gh-pages": "^6.1.1",
     "glob": "^10.0.0",
-    "np": "^5.0.3",
     "prettier": "^2.1.2",
+    "rc-test": "^7.1.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "typescript": "^5.0.0",
-    "cheerio": "1.0.0-rc.12",
-    "umi-test": "^1.9.7"
+    "typescript": "^5.0.0"
   },
   "peerDependencies": {
-    "react": ">=16.9.0",
-    "react-dom": ">=16.9.0"
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
   },
   "engines": {
-    "node": ">=8.x"
+    "node": ">=12.x"
   }
 }
