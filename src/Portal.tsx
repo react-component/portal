@@ -1,12 +1,16 @@
+import canUseDom from '@rc-component/util/lib/Dom/canUseDom';
+import {
+  getNodeRef,
+  supportRef,
+  useComposeRef,
+} from '@rc-component/util/lib/ref';
+import warning from '@rc-component/util/lib/warning';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import canUseDom from 'rc-util/lib/Dom/canUseDom';
-import warning from 'rc-util/lib/warning';
-import { supportRef, useComposeRef } from 'rc-util/lib/ref';
 import OrderContext from './Context';
+import { inlineMock } from './mock';
 import useDom from './useDom';
 import useScrollLocker from './useScrollLocker';
-import { inlineMock } from './mock';
 
 export type ContainerType = Element | DocumentFragment;
 
@@ -109,7 +113,7 @@ const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
   let childRef: React.Ref<any> = null;
 
   if (children && supportRef(children) && ref) {
-    ({ ref: childRef } = children as any);
+    childRef = getNodeRef(children);
   }
 
   const mergedRef = useComposeRef(childRef, ref);

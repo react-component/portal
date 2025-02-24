@@ -32,7 +32,7 @@ open http://localhost:8000
 ## Usage
 
 ```js | pure
-import Portal from 'rc-portal';
+import Portal from '@rc-component/portal';
 
 const Demo = () => {
   return <Portal open>Hello World</Portal>;
