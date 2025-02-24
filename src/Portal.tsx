@@ -113,8 +113,7 @@ const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
   let childRef: React.Ref<any> = null;
 
   if (children && supportRef(children) && ref) {
-    ({ ref: childRef } = children as any);
-    // childRef = getNodeRef(children);
+    childRef = getNodeRef(children);
   }
 
   const mergedRef = useComposeRef(childRef, ref);
