@@ -1,5 +1,5 @@
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
 import Portal from '../src';
 
 global.isOverflow = true;
@@ -210,7 +210,8 @@ describe('Portal', () => {
       expect(portalRef.current).toBeFalsy();
     });
 
-    it('not support FC', () => {
+    it('no warning for React 19 ref', () => {
+      const errSpy = jest.spyOn(console, 'error');
       const elementRef = React.createRef<HTMLParagraphElement>();
       const portalRef = React.createRef();
 
@@ -222,8 +223,9 @@ describe('Portal', () => {
         </Portal>,
       );
 
-      expect(elementRef.current).toBeFalsy();
-      expect(portalRef.current).toBeFalsy();
+      expect(errSpy).not.toHaveBeenCalled();
+
+      errSpy.mockRestore();
     });
   });
 
