@@ -1,5 +1,5 @@
 import React, { version } from 'react';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import Portal from '../../src';
 import './basic.less';
 
@@ -42,13 +42,11 @@ export default () => {
         </div>
 
         <Portal open={show} getContainer={getContainer} autoLock={lock}>
-          <p className={classNames(contentCls, 'root')}>Hello Root</p>
+          <p className={clsx(contentCls, 'root')}>Hello Root</p>
           <Portal open={show} getContainer={getContainer} autoLock={lock}>
-            <p className={classNames(contentCls, 'parent')}>Hello Parent</p>
+            <p className={clsx(contentCls, 'parent')}>Hello Parent</p>
             <Portal open={show} getContainer={getContainer} autoLock={lock}>
-              <p className={classNames(contentCls, 'children')}>
-                Hello Children
-              </p>
+              <p className={clsx(contentCls, 'children')}>Hello Children</p>
             </Portal>
           </Portal>
         </Portal>
