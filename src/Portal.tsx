@@ -91,7 +91,16 @@ const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
     const customizeContainer = getPortalContainer(getContainer);
 
     // Tell component that we check this in effect which is safe to be `null`
-    setInnerContainer(customizeContainer ?? null);
+    setInnerContainer((prev) => {
+      const nextContainer = customizeContainer ?? null;
+  
+      // Avoid cascading updates when the target container is unchanged
+      if (prev === nextContainer) {
+        return prev;
+      }
+  
+      return nextContainer;
+    });
   });
 
   const [defaultContainer, queueCreate] = useDom(
