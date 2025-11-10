@@ -101,7 +101,7 @@ const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
   
       return nextContainer;
     });
-  });
+  }, [getContainer]);
 
   const [defaultContainer, queueCreate] = useDom(
     mergedRender && !innerContainer,
