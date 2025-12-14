@@ -28,6 +28,7 @@ yarn.lock
 package-lock.json
 pnpm-lock.yaml
 .doc
+.vscode
 
 # dumi
 .dumi/tmp
