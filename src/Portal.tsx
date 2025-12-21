@@ -11,6 +11,7 @@ import OrderContext from './Context';
 import { inlineMock } from './mock';
 import useDom from './useDom';
 import useScrollLocker from './useScrollLocker';
+import useEscKeyDown from './useEscKeyDown';
 
 export type ContainerType = Element | DocumentFragment;
 
@@ -19,6 +20,14 @@ export type GetContainer =
   | ContainerType
   | (() => ContainerType)
   | false;
+
+export type EscCallback = ({
+  isTop,
+  event,
+}: {
+  isTop: boolean;
+  event: KeyboardEvent;
+}) => void;
 
 export interface PortalProps {
   /** Customize container element. Default will create a div in document.body when `open` */
@@ -30,6 +39,7 @@ export interface PortalProps {
   autoDestroy?: boolean;
   /** Lock screen scroll when open */
   autoLock?: boolean;
+  onEsc?: EscCallback;
 
   /** @private debug name. Do not use in prod */
   debug?: string;
@@ -61,6 +71,7 @@ const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
     debug,
     autoDestroy = true,
     children,
+    onEsc,
   } = props;
 
   const [shouldRender, setShouldRender] = React.useState(open);
@@ -108,6 +119,9 @@ const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
       (mergedContainer === defaultContainer ||
         mergedContainer === document.body),
   );
+
+  // ========================= Esc Keydown ==========================
+  useEscKeyDown(open, onEsc);
 
   // =========================== Ref ===========================
   let childRef: React.Ref<any> = null;

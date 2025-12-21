@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
 import Portal from '../src';
 
@@ -289,5 +289,78 @@ describe('Portal', () => {
     rerender(<Demo visible />);
 
     expect(document.querySelector('.checker').textContent).toEqual('true');
+  });
+
+  describe('onEsc', () => {
+    beforeEach(() => {
+      const useIdModule = require('@rc-component/util/lib/hooks/useId');
+      let seed = 0;
+      jest
+        .spyOn(useIdModule, 'default')
+        .mockImplementation(() => `test-${(seed += 1)}`);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('only last opened portal is top', () => {
+      const onEscA = jest.fn();
+      const onEscB = jest.fn();
+
+      render(
+        <>
+          <Portal open onEsc={onEscA}>
+            <div />
+          </Portal>
+          <Portal open onEsc={onEscB}>
+            <div />
+          </Portal>
+        </>,
+      );
+
+      fireEvent.keyDown(window, { key: 'Escape' });
+
+      expect(onEscA).toHaveBeenCalledWith(
+        expect.objectContaining({ isTop: false }),
+      );
+      expect(onEscB).toHaveBeenCalledWith(
+        expect.objectContaining({ isTop: true }),
+      );
+    });
+
+    it('top changes after portal closes', () => {
+      const onEscA = jest.fn();
+      const onEscB = jest.fn();
+
+      const { rerender } = render(
+        <>
+          <Portal open onEsc={onEscA}>
+            <div />
+          </Portal>
+          <Portal open onEsc={onEscB}>
+            <div />
+          </Portal>
+        </>,
+      );
+
+      rerender(
+        <>
+          <Portal open onEsc={onEscA}>
+            <div />
+          </Portal>
+          <Portal open={false} onEsc={onEscB}>
+            <div />
+          </Portal>
+        </>,
+      );
+
+      fireEvent.keyDown(window, { key: 'Escape' });
+
+      expect(onEscA).toHaveBeenCalledWith(
+        expect.objectContaining({ isTop: true }),
+      );
+      expect(onEscB).not.toHaveBeenCalled();
+    });
   });
 });
