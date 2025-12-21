@@ -41,11 +41,17 @@ export default () => {
           />
         </div>
 
-        <Portal open={show} getContainer={getContainer} autoLock={lock}>
+        <Portal open={show} getContainer={getContainer} autoLock={lock} onEsc={({ isTop, event }) => {
+          console.log('root onEsc', { isTop, event });
+        }}>
           <p className={clsx(contentCls, 'root')}>Hello Root</p>
-          <Portal open={show} getContainer={getContainer} autoLock={lock}>
+          <Portal open={show} getContainer={getContainer} autoLock={lock} onEsc={({ isTop, event }) => {
+            console.log('parent onEsc', { isTop, event });
+          }}>
             <p className={clsx(contentCls, 'parent')}>Hello Parent</p>
-            <Portal open={show} getContainer={getContainer} autoLock={lock}>
+            <Portal open={show} getContainer={getContainer} autoLock={lock} onEsc={({ isTop, event }) => {
+              console.log('children onEsc', { isTop, event });
+            }}>
               <p className={clsx(contentCls, 'children')}>Hello Children</p>
             </Portal>
           </Portal>
