@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 import { type EscCallback } from './Portal';
 import useId from '@rc-component/util/lib/hooks/useId';
 import { useEvent } from '@rc-component/util';
@@ -7,7 +7,6 @@ let stack: string[] = [];
 
 export default function useEscKeyDown(open: boolean, onEsc?: EscCallback) {
   const id = useId();
-  const inStackRef = useRef(false);
 
   const handleEscKeyDown = useEvent((event: KeyboardEvent) => {
     if (event.key === 'Escape') {
@@ -16,17 +15,13 @@ export default function useEscKeyDown(open: boolean, onEsc?: EscCallback) {
     }
   });
 
-  if (open) {
-    if (!inStackRef.current) {
+  useMemo(() => {
+    if (open) {
       stack.push(id);
-      inStackRef.current = true;
-    }
-  } else {
-    if (inStackRef.current) {
+    } else {
       stack = stack.filter(item => item !== id);
-      inStackRef.current = false;
     }
-  }
+  }, [open, id]);
 
   useEffect(() => {
     if (!open) {
@@ -36,10 +31,6 @@ export default function useEscKeyDown(open: boolean, onEsc?: EscCallback) {
     window.addEventListener('keydown', handleEscKeyDown);
 
     return () => {
-      if (inStackRef.current) {
-        stack = stack.filter(item => item !== id);
-        inStackRef.current = false;
-      }
       window.removeEventListener('keydown', handleEscKeyDown);
     };
   }, [open, id]);
