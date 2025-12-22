@@ -22,10 +22,10 @@ export type GetContainer =
   | false;
 
 export type EscCallback = ({
-  isTop,
+  top,
   event,
 }: {
-  isTop: boolean;
+  top: boolean;
   event: KeyboardEvent;
 }) => void;
 
