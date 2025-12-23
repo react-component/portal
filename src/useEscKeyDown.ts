@@ -31,6 +31,7 @@ export default function useEscKeyDown(open: boolean, onEsc?: EscCallback) {
     window.addEventListener('keydown', handleEscKeyDown);
 
     return () => {
+      stack = stack.filter(item => item !== id);
       window.removeEventListener('keydown', handleEscKeyDown);
     };
   }, [open, id]);
