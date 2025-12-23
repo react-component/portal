@@ -16,9 +16,9 @@ export default function useEscKeyDown(open: boolean, onEsc?: EscCallback) {
   });
 
   useMemo(() => {
-    if (open) {
+    if (open && !stack.includes(id)) {
       stack.push(id);
-    } else {
+    } else if (!open) {
       stack = stack.filter(item => item !== id);
     }
   }, [open, id]);
