@@ -1,6 +1,7 @@
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
 import Portal from '../src';
+import { stack } from '../src/useEscKeyDown';
 
 global.isOverflow = true;
 
@@ -354,6 +355,18 @@ describe('Portal', () => {
         expect.objectContaining({ top: true }),
       );
       expect(onEscB).not.toHaveBeenCalled();
+    });
+
+    it('should clear stack when unmount', () => {
+      const { unmount } = render(
+        <Portal open>
+          <div />
+        </Portal>,
+      );
+
+      expect(stack).toHaveLength(1);
+      unmount();
+      expect(stack).toHaveLength(0);
     });
   });
 });

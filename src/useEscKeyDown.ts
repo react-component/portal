@@ -3,7 +3,7 @@ import { type EscCallback } from './Portal';
 import useId from '@rc-component/util/lib/hooks/useId';
 import { useEvent } from '@rc-component/util';
 
-let stack: string[] = [];
+export let stack: string[] = []; // export for testing
 
 export default function useEscKeyDown(open: boolean, onEsc?: EscCallback) {
   const id = useId();
@@ -31,6 +31,7 @@ export default function useEscKeyDown(open: boolean, onEsc?: EscCallback) {
     window.addEventListener('keydown', handleEscKeyDown);
 
     return () => {
+      stack = stack.filter(item => item !== id);
       window.removeEventListener('keydown', handleEscKeyDown);
     };
   }, [open, id]);
