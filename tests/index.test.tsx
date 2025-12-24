@@ -357,7 +357,7 @@ describe('Portal', () => {
       expect(onEscB).not.toHaveBeenCalled();
     });
 
-    it('should not trigger onEsc when IME composing', async () => {
+    it('should not trigger onEsc when IME composing', () => {
       const onEsc = jest.fn();
 
       render(
