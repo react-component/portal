@@ -22,6 +22,7 @@ export default () => {
 
   return (
     <React.StrictMode>
+      <input type="text" />
       <div style={{ height: '200vh' }}>
         <div style={{ border: '2px solid red' }}>
           Real Version: {version}

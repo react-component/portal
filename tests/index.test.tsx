@@ -357,6 +357,19 @@ describe('Portal', () => {
       expect(onEscB).not.toHaveBeenCalled();
     });
 
+    it('should not trigger onEsc when IME composing', async () => {
+      const onEsc = jest.fn();
+
+      render(
+        <Portal open onEsc={onEsc}>
+          <input type="text" />
+        </Portal>,
+      );
+
+      fireEvent.keyDown(window, { key: 'Escape', isComposing: true });
+      expect(onEsc).not.toHaveBeenCalled();
+    });
+
     it('should clear stack when unmount', () => {
       const { unmount } = render(
         <Portal open>

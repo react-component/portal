@@ -9,7 +9,7 @@ export default function useEscKeyDown(open: boolean, onEsc?: EscCallback) {
   const id = useId();
 
   const handleEscKeyDown = useEvent((event: KeyboardEvent) => {
-    if (event.key === 'Escape') {
+    if (event.key === 'Escape' && !event.isComposing) {
       const top = stack[stack.length - 1] === id;
       onEsc?.({ top, event });
     }
