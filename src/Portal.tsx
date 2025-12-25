@@ -91,16 +91,12 @@ const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
     const customizeContainer = getPortalContainer(getContainer);
 
     // Tell component that we check this in effect which is safe to be `null`
-    setInnerContainer((prev) => {
-      const nextContainer = customizeContainer ?? null;
-  
-      // Avoid cascading updates when the target container is unchanged
-      if (prev === nextContainer) {
-        return prev;
-      }
-  
-      return nextContainer;
-    });
+    setInnerContainer(
+      () =>
+        // React do the state update even the value is the same,
+        // Use function call to force React to compare update
+        customizeContainer ?? null,
+    );
   });
 
   const [defaultContainer, queueCreate] = useDom(
