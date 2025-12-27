@@ -381,5 +381,25 @@ describe('Portal', () => {
       unmount();
       expect(stack).toHaveLength(0);
     });
+
+    it('onEsc should treat first mounted portal as top in StrictMode', () => {
+      const onEsc = jest.fn();
+    
+      const Demo = ({ visible }: { visible: boolean }) =>
+        visible ? (
+          <Portal open onEsc={onEsc}>
+            <div />
+          </Portal>
+        ) : null;
+    
+      render(<Demo visible />, { wrapper: React.StrictMode });
+    
+      expect(stack).toHaveLength(1);
+    
+      fireEvent.keyDown(window, { key: 'Escape' });
+    
+      expect(onEsc).toHaveBeenCalledWith(expect.objectContaining({ top: true }));
+    });
+    
   });
 });
