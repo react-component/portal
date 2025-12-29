@@ -24,6 +24,10 @@ export default function useEscKeyDown(open: boolean, onEsc?: EscCallback) {
   }, [open, id]);
 
   useEffect(() => {
+    if (open && !stack.includes(id)) {
+      stack.push(id);
+    }
+
     if (!open) {
       return;
     }
