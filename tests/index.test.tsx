@@ -400,6 +400,30 @@ describe('Portal', () => {
     
       expect(onEsc).toHaveBeenCalledWith(expect.objectContaining({ top: true }));
     });
+
+    it('nested portals should trigger in correct order', () => {
+      const onEsc = jest.fn();
+      const onEsc2 = jest.fn();
+      const onEsc3 = jest.fn();
+
+      render(
+        <Portal open onEsc={onEsc}>
+          <div />
+          <Portal open onEsc={onEsc2}>
+            <div />
+            <Portal open onEsc={onEsc3}>
+              <div />
+            </Portal>
+          </Portal>
+        </Portal>
+      );
+
+      fireEvent.keyDown(window, { key: 'Escape' });
+
+      expect(onEsc).toHaveBeenCalledWith(expect.objectContaining({ top: false }));
+      expect(onEsc2).toHaveBeenCalledWith(expect.objectContaining({ top: false }));
+      expect(onEsc3).toHaveBeenCalledWith(expect.objectContaining({ top: true }));
+    });
     
   });
 });
