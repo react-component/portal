@@ -370,6 +370,32 @@ describe('Portal', () => {
       expect(onEsc).not.toHaveBeenCalled();
     });
 
+    it('should not trigger onEsc within IME lock duration after compositionend', () => {
+      jest.useFakeTimers();
+      const onEsc = jest.fn();
+
+      render(
+        <Portal open onEsc={onEsc}>
+          <input type="text" />
+        </Portal>,
+      );
+
+      fireEvent.compositionEnd(window);
+
+      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(onEsc).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(100);
+      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(onEsc).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(150);
+      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(onEsc).toHaveBeenCalledWith(expect.objectContaining({ top: true }));
+
+      jest.useRealTimers();
+    });
+
     it('should clear stack when unmount', () => {
       const { unmount } = render(
         <Portal open>
