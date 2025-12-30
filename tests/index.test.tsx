@@ -1,7 +1,7 @@
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
 import Portal from '../src';
-import { stack } from '../src/useEscKeyDown';
+import { resetEscKeyDownLock, stack } from '../src/useEscKeyDown';
 
 global.isOverflow = true;
 
@@ -27,6 +27,9 @@ jest.mock('@rc-component/util/lib/hooks/useId', () => {
 describe('Portal', () => {
   beforeEach(() => {
     global.isOverflow = true;
+  });
+  afterEach(() => {
+    resetEscKeyDownLock();
   });
 
   it('Order', () => {

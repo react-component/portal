@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 import { type EscCallback } from './Portal';
 import useId from '@rc-component/util/lib/hooks/useId';
 import { useEvent } from '@rc-component/util';
@@ -6,16 +6,19 @@ import { useEvent } from '@rc-component/util';
 export let stack: string[] = []; // export for testing
 
 const IME_LOCK_DURATION = 200;
+let lastCompositionEndTime = 0;
+
+export function resetEscKeyDownLock() {
+  lastCompositionEndTime = 0;
+}
 
 export default function useEscKeyDown(open: boolean, onEsc?: EscCallback) {
   const id = useId();
 
-  const compositionEndTimeRef = useRef(0);
-
   const handleEscKeyDown = useEvent((event: KeyboardEvent) => {
     if (event.key === 'Escape' && !event.isComposing) {
       const now = Date.now();
-      if (now - compositionEndTimeRef.current < IME_LOCK_DURATION) {
+      if (now - lastCompositionEndTime < IME_LOCK_DURATION) {
         return;
       }
 
@@ -25,7 +28,7 @@ export default function useEscKeyDown(open: boolean, onEsc?: EscCallback) {
   });
 
   const handleCompositionEnd = useEvent(() => {
-    compositionEndTimeRef.current = Date.now();
+    lastCompositionEndTime = Date.now();
   });
 
   useMemo(() => {
