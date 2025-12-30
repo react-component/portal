@@ -3,7 +3,7 @@ import { type EscCallback } from './Portal';
 import useId from '@rc-component/util/lib/hooks/useId';
 import { useEvent } from '@rc-component/util';
 
-export let stack: string[] = [];
+export let stack: string[] = []; // export for testing
 
 const IME_LOCK_DURATION = 200;
 
