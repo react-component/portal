@@ -29,7 +29,7 @@ const onGlobalKeyDown = (event: KeyboardEvent) => {
     }
 
     const len = stack.length;
-    for (let i = 0; i < len; i += 1) {
+    for (let i = len - 1; i >= 0; i -= 1) {
       stack[i].onEsc({
         top: i === len - 1,
         event,
