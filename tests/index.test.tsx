@@ -1,7 +1,7 @@
-import { render, fireEvent } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import Portal from '../src';
-import { stack } from '../src/useEscKeyDown';
+import { _test } from '../src/useEscKeyDown';
 
 global.isOverflow = true;
 
@@ -298,6 +298,16 @@ describe('Portal', () => {
   });
 
   describe('onEsc', () => {
+    beforeEach(() => {
+      _test().reset();
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.clearAllTimers();
+      jest.useRealTimers();
+    });
+
     it('only last opened portal is top', () => {
       const onEscA = jest.fn();
       const onEscB = jest.fn();
@@ -370,6 +380,31 @@ describe('Portal', () => {
       expect(onEsc).not.toHaveBeenCalled();
     });
 
+    it('should not trigger onEsc within IME lock duration after compositionend', () => {
+      const onEsc = jest.fn();
+
+      render(
+        <Portal open onEsc={onEsc}>
+          <input type="text" />
+        </Portal>,
+      );
+
+      fireEvent.compositionEnd(window);
+
+      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(onEsc).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(100);
+      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(onEsc).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(150);
+      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(onEsc).toHaveBeenCalledWith(
+        expect.objectContaining({ top: true }),
+      );
+    });
+
     it('should clear stack when unmount', () => {
       const { unmount } = render(
         <Portal open>
@@ -377,28 +412,30 @@ describe('Portal', () => {
         </Portal>,
       );
 
-      expect(stack).toHaveLength(1);
+      expect(_test().stack).toHaveLength(1);
       unmount();
-      expect(stack).toHaveLength(0);
+      expect(_test().stack).toHaveLength(0);
     });
 
     it('onEsc should treat first mounted portal as top in StrictMode', () => {
       const onEsc = jest.fn();
-    
+
       const Demo = ({ visible }: { visible: boolean }) =>
         visible ? (
           <Portal open onEsc={onEsc}>
             <div />
           </Portal>
         ) : null;
-    
+
       render(<Demo visible />, { wrapper: React.StrictMode });
-    
-      expect(stack).toHaveLength(1);
-    
+
+      expect(_test().stack).toHaveLength(1);
+
       fireEvent.keyDown(window, { key: 'Escape' });
-    
-      expect(onEsc).toHaveBeenCalledWith(expect.objectContaining({ top: true }));
+
+      expect(onEsc).toHaveBeenCalledWith(
+        expect.objectContaining({ top: true }),
+      );
     });
 
     it('nested portals should trigger in correct order', () => {
@@ -415,15 +452,20 @@ describe('Portal', () => {
               <div />
             </Portal>
           </Portal>
-        </Portal>
+        </Portal>,
       );
 
       fireEvent.keyDown(window, { key: 'Escape' });
 
-      expect(onEsc).toHaveBeenCalledWith(expect.objectContaining({ top: false }));
-      expect(onEsc2).toHaveBeenCalledWith(expect.objectContaining({ top: false }));
-      expect(onEsc3).toHaveBeenCalledWith(expect.objectContaining({ top: true }));
+      expect(onEsc).toHaveBeenCalledWith(
+        expect.objectContaining({ top: false }),
+      );
+      expect(onEsc2).toHaveBeenCalledWith(
+        expect.objectContaining({ top: false }),
+      );
+      expect(onEsc3).toHaveBeenCalledWith(
+        expect.objectContaining({ top: true }),
+      );
     });
-    
   });
 });
