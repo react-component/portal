@@ -1,60 +1,93 @@
+import { useEvent } from '@rc-component/util';
+import useId from '@rc-component/util/lib/hooks/useId';
 import { useEffect, useMemo } from 'react';
 import { type EscCallback } from './Portal';
-import useId from '@rc-component/util/lib/hooks/useId';
-import { useEvent } from '@rc-component/util';
 
-export let stack: string[] = []; // export for testing
+let stack: { id: string; onEsc?: EscCallback }[] = [];
 
 const IME_LOCK_DURATION = 200;
 let lastCompositionEndTime = 0;
 
-export function resetEscKeyDownLock() {
-  lastCompositionEndTime = 0;
+// Export for testing
+export const _test =
+  process.env.NODE_ENV === 'test'
+    ? () => ({
+        stack,
+        reset: () => {
+          // Not reset stack to ensure effect will clean up correctly
+          lastCompositionEndTime = 0;
+        },
+      })
+    : null;
+
+// Global event handlers
+const onGlobalKeyDown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && !event.isComposing) {
+    const now = Date.now();
+    if (now - lastCompositionEndTime < IME_LOCK_DURATION) {
+      return;
+    }
+
+    const len = stack.length;
+    for (let i = 0; i < len; i += 1) {
+      stack[i].onEsc({
+        top: i === len - 1,
+        event,
+      });
+    }
+  }
+};
+
+const onGlobalCompositionEnd = () => {
+  lastCompositionEndTime = Date.now();
+};
+
+function attachGlobalEventListeners() {
+  window.addEventListener('keydown', onGlobalKeyDown);
+  window.addEventListener('compositionend', onGlobalCompositionEnd);
+}
+
+function detachGlobalEventListeners() {
+  if (stack.length === 0) {
+    window.removeEventListener('keydown', onGlobalKeyDown);
+    window.removeEventListener('compositionend', onGlobalCompositionEnd);
+  }
 }
 
 export default function useEscKeyDown(open: boolean, onEsc?: EscCallback) {
   const id = useId();
 
-  const handleEscKeyDown = useEvent((event: KeyboardEvent) => {
-    if (event.key === 'Escape' && !event.isComposing) {
-      const now = Date.now();
-      if (now - lastCompositionEndTime < IME_LOCK_DURATION) {
-        return;
-      }
+  const onEventEsc = useEvent(onEsc);
 
-      const top = stack[stack.length - 1] === id;
-      onEsc?.({ top, event });
+  const ensure = () => {
+    if (!stack.find(item => item.id === id)) {
+      stack.push({ id, onEsc: onEventEsc });
     }
-  });
+  };
 
-  const handleCompositionEnd = useEvent(() => {
-    lastCompositionEndTime = Date.now();
-  });
+  const clear = () => {
+    stack = stack.filter(item => item.id !== id);
+  };
 
   useMemo(() => {
-    if (open && !stack.includes(id)) {
-      stack.push(id);
+    if (open) {
+      ensure();
     } else if (!open) {
-      stack = stack.filter(item => item !== id);
+      clear();
     }
-  }, [open, id]);
+  }, [open]);
 
   useEffect(() => {
-    if (open && !stack.includes(id)) {
-      stack.push(id);
+    if (open) {
+      ensure();
+      // Attach global event listeners
+      attachGlobalEventListeners();
+
+      return () => {
+        clear();
+        // Remove global event listeners if instances is empty
+        detachGlobalEventListeners();
+      };
     }
-
-    if (!open) {
-      return;
-    }
-
-    window.addEventListener('keydown', handleEscKeyDown);
-    window.addEventListener('compositionend', handleCompositionEnd);
-
-    return () => {
-      stack = stack.filter(item => item !== id);
-      window.removeEventListener('keydown', handleEscKeyDown);
-      window.removeEventListener('compositionend', handleCompositionEnd);
-    };
-  }, [open, id]);
+  }, [open]);
 }
