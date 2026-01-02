@@ -467,5 +467,130 @@ describe('Portal', () => {
         expect.objectContaining({ top: true }),
       );
     });
+
+    describe('nonce', () => {
+      it('should apply nonce to style tag when autoLock is enabled', () => {
+        const testNonce = 'test-nonce-123';
+
+        render(
+          <Portal open autoLock nonce={testNonce}>
+            <div>Content</div>
+          </Portal>,
+        );
+
+        const styleTag = document.querySelector('style[nonce]');
+        expect(styleTag).toBeTruthy();
+        expect(styleTag?.getAttribute('nonce')).toBe(testNonce);
+      });
+
+      it('should not apply nonce when autoLock is disabled', () => {
+        const testNonce = 'test-nonce-123';
+
+        render(
+          <Portal open nonce={testNonce}>
+            <div>Content</div>
+          </Portal>,
+        );
+
+        const styleTag = document.querySelector(`style[nonce="${testNonce}"]`);
+        expect(styleTag).toBeFalsy();
+      });
+
+      it('should remove style tag when portal closes but preserve nonce capability', () => {
+        const testNonce = 'test-nonce-123';
+
+        const { rerender } = render(
+          <Portal open autoLock nonce={testNonce}>
+            <div>Content</div>
+          </Portal>,
+        );
+
+        expect(
+          document.querySelector(`style[nonce="${testNonce}"]`),
+        ).toBeTruthy();
+
+        rerender(
+          <Portal open={false} autoLock nonce={testNonce}>
+            <div>Content</div>
+          </Portal>,
+        );
+
+        expect(document.querySelector(`style[nonce="${testNonce}"]`)).toBeFalsy();
+
+        // Reopen and verify nonce is still applied
+        rerender(
+          <Portal open autoLock nonce={testNonce}>
+            <div>Content</div>
+          </Portal>,
+        );
+
+        expect(
+          document.querySelector(`style[nonce="${testNonce}"]`),
+        ).toBeTruthy();
+      });
+
+      it('should work with custom container and nonce', () => {
+        const testNonce = 'test-nonce-123';
+
+        render(
+          <Portal
+            open
+            autoLock
+            getContainer={() => document.body}
+            nonce={testNonce}
+          >
+            <div>Content</div>
+          </Portal>,
+        );
+
+        const styleTag = document.querySelector('style[nonce]');
+        expect(styleTag?.getAttribute('nonce')).toBe(testNonce);
+      });
+
+      it('should not apply nonce when rendering to custom non-body container', () => {
+        const testNonce = 'test-nonce-123';
+        const div = document.createElement('div');
+        document.body.appendChild(div);
+
+        render(
+          <Portal open autoLock getContainer={() => div} nonce={testNonce}>
+            <div>Content</div>
+          </Portal>,
+        );
+
+        // Should not lock body when container is custom div
+        const styleTag = document.querySelector(`style[nonce="${testNonce}"]`);
+        expect(styleTag).toBeFalsy();
+
+        document.body.removeChild(div);
+      });
+
+      it('should handle undefined nonce gracefully', () => {
+        render(
+          <Portal open autoLock>
+            <div>Content</div>
+          </Portal>,
+        );
+
+        // Should still create style tag, just without nonce
+        expect(document.body).toHaveStyle({
+          overflowY: 'hidden',
+        });
+      });
+
+      it('should work in StrictMode with nonce', () => {
+        const testNonce = 'test-nonce-strict';
+
+        render(
+          <Portal open autoLock nonce={testNonce}>
+            <div>Content</div>
+          </Portal>,
+          { wrapper: React.StrictMode },
+        );
+
+        const styleTag = document.querySelector('style[nonce]');
+        expect(styleTag?.getAttribute('nonce')).toBe(testNonce);
+      });
+    });
   });
 });
