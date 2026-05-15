@@ -10,18 +10,13 @@ jest.mock('../src/util', () => {
   };
 });
 
-// Revert `useLayoutEffect` back to real one since we should keep order for test
-jest.mock('@rc-component/util/lib/hooks/useLayoutEffect', () => {
-  const origin = jest.requireActual('react');
-  return origin.useLayoutEffect;
-});
-
-// Revert `useLayoutEffect` back to real one since we should keep order for test
-jest.mock('@rc-component/util/lib/getScrollBarSize', () => {
-  const origin = jest.requireActual('@rc-component/util/lib/getScrollBarSize');
+jest.mock('@rc-component/util', () => {
+  const origin = jest.requireActual('@rc-component/util');
+  const React = jest.requireActual('react');
   return {
     ...origin,
-
+    // Revert `useLayoutEffect` back to real one since we should keep order for test
+    useLayoutEffect: React.useLayoutEffect,
     getTargetScrollBarSize: () => ({ width: 93, height: 1128 }),
   };
 });

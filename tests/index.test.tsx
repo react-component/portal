@@ -13,15 +13,15 @@ jest.mock('../src/util', () => {
   };
 });
 
-// Revert `useLayoutEffect` back to real one since we should keep order for test
-jest.mock('@rc-component/util/lib/hooks/useLayoutEffect', () => {
-  const origin = jest.requireActual('react');
-  return origin.useLayoutEffect;
-});
-
-jest.mock('@rc-component/util/lib/hooks/useId', () => {
-  const origin = jest.requireActual('react');
-  return origin.useId;
+jest.mock('@rc-component/util', () => {
+  const origin = jest.requireActual('@rc-component/util');
+  const React = jest.requireActual('react');
+  return {
+    ...origin,
+    // Revert `useLayoutEffect` back to real one since we should keep order for test
+    useLayoutEffect: React.useLayoutEffect,
+    useId: React.useId,
+  };
 });
 
 describe('Portal', () => {
