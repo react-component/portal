@@ -1,5 +1,4 @@
-import { useEvent } from '@rc-component/util';
-import useId from '@rc-component/util/lib/hooks/useId';
+import { useEvent, useId } from '@rc-component/util';
 import { useEffect, useMemo } from 'react';
 import { type EscCallback } from './Portal';
 

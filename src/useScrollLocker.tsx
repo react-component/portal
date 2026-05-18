@@ -1,7 +1,10 @@
 import * as React from 'react';
-import { updateCSS, removeCSS } from '@rc-component/util/lib/Dom/dynamicCSS';
-import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
-import { getTargetScrollBarSize } from '@rc-component/util/lib/getScrollBarSize';
+import {
+  getTargetScrollBarSize,
+  removeCSS,
+  updateCSS,
+  useLayoutEffect,
+} from '@rc-component/util';
 import { isBodyOverflowing } from './util';
 
 const UNIQUE_ID = `rc-util-locker-${Date.now()}`;

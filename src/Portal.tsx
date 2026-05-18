@@ -1,10 +1,10 @@
-import canUseDom from '@rc-component/util/lib/Dom/canUseDom';
 import {
+  canUseDom,
   getNodeRef,
   supportRef,
   useComposeRef,
-} from '@rc-component/util/lib/ref';
-import warning from '@rc-component/util/lib/warning';
+  warning,
+} from '@rc-component/util';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import OrderContext from './Context';
