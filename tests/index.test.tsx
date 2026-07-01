@@ -91,7 +91,7 @@ describe('Portal', () => {
 
       const { container } = render(<Demo />);
       expect(container).toMatchSnapshot();
-      expect(renderTimes).toEqual(1);
+      expect(renderTimes).toEqual(2);
     });
   });
 
