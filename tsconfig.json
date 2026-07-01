@@ -1,20 +1,17 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "ignoreDeprecations": "6.0",
     "strict": false,
-    "noUncheckedSideEffectImports": false,
     "types": ["node", "jest"],
-    "moduleResolution": "node",
-    "baseUrl": "./",
+    "moduleResolution": "bundler",
     "jsx": "preserve",
     "declaration": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "paths": {
-      "@/*": ["src/*"],
-      "@@/*": [".dumi/tmp/*"],
-      "@rc-component/portal": ["src/Portal.tsx"]
+      "@/*": ["./src/*"],
+      "@@/*": ["./.dumi/tmp/*"],
+      "@rc-component/portal": ["./src/Portal.tsx"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".dumirc.ts"],
