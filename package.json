@@ -80,8 +80,8 @@
     "eslint-plugin-react-hooks": "^7.1.1"
   },
   "peerDependencies": {
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
   },
   "engines": {
     "node": ">=12.x"
