@@ -13,7 +13,7 @@
   </p>
 </div>
 
-<p align="center">English | [简体中文](./README.zh-CN.md)</p>
+<p align="center">English | <a href="./README.zh-CN.md">简体中文</a></p>
 
 ## Highlights
 
@@ -39,16 +39,16 @@ export default () => <Portal open>Hello World</Portal>;
 
 ## API
 
-| Prop           | Description                               |
-| -------------- | ----------------------------------------- |
-| `open`         | Whether to render portal content.         |
-| `getContainer` | Customize portal container.               |
-| `autoLock`     | Lock page scroll when the portal is open. |
+| Prop | Description | Type | Default |
+| --- | --- | --- | --- |
+| `getContainer` | Customize portal container. | `Element \| () => Element \| string \| false` | `document.body` |
+| `open` | Whether to render portal content. | `boolean` | `false` |
+| `autoLock` | Lock page scroll when the portal is open. | `boolean` | `false` |
 
 ## Development
 
 ```bash
-npm install
+ut install
 npm start
 npm test
 npm run lint

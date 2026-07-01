@@ -13,7 +13,7 @@
   </p>
 </div>
 
-<p align="center">简体中文 | [English](./README.md)</p>
+<p align="center">简体中文 | <a href="./README.md">English</a></p>
 
 ## 亮点
 
@@ -39,16 +39,16 @@ export default () => <Portal open>Hello World</Portal>;
 
 ## API
 
-| 名称           | 说明                        |
-| -------------- | --------------------------- |
-| `open`         | 是否渲染 Portal 内容。      |
-| `getContainer` | 自定义 Portal 容器。        |
-| `autoLock`     | Portal 打开时锁定页面滚动。 |
+| 名称 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| `getContainer` | 自定义 Portal 容器。 | `Element \| () => Element \| string \| false` | `document.body` |
+| `open` | 是否渲染 Portal 内容。 | `boolean` | `false` |
+| `autoLock` | Portal 打开时锁定页面滚动。 | `boolean` | `false` |
 
 ## 本地开发
 
 ```bash
-npm install
+ut install
 npm start
 npm test
 npm run lint
