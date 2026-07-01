@@ -12,5 +12,6 @@
       "@@/*": [".dumi/tmp/*"],
       "@rc-component/portal": ["src/Portal.tsx"]
     }
-  }
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".dumirc.ts"]
 }
