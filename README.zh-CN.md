@@ -48,7 +48,7 @@ export default () => <Portal open>Hello World</Portal>;
 ## 本地开发
 
 ```bash
-ut install
+npm install
 npm start
 npm test
 npm run lint
