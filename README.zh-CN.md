@@ -1,7 +1,7 @@
 <div align="center">
   <h1>@rc-component/portal</h1>
-  <p><sub><a href="https://ant.design"><img alt="Ant Design" height="14" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" style="vertical-align: -0.125em;" /></a> Part of the Ant Design ecosystem.</sub></p>
-  <p>🌀 React portal primitive with lifecycle-friendly container handling.</p>
+  <p><sub><a href="https://ant.design"><img alt="Ant Design" height="14" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" style="vertical-align: -0.125em;" /></a> Ant Design 生态的一部分。</sub></p>
+  <p>🌀 支持生命周期与容器管理的 React Portal 基础组件。</p>
 
   <p>
     <a href="https://npmjs.org/package/@rc-component/portal"><img alt="NPM version" src="https://img.shields.io/npm/v/@rc-component/portal.svg?style=flat-square"></a>
@@ -13,23 +13,23 @@
   </p>
 </div>
 
-<p align="center">English | <a href="./README.zh-CN.md">简体中文</a></p>
+<p align="center"><a href="./README.md">English</a> | 简体中文</p>
 
-## Highlights
+## 亮点
 
-| Area    | Support                                                            |
-| ------- | ------------------------------------------------------------------ |
-| Purpose | React portal primitive with lifecycle-friendly container handling. |
-| Package | `@rc-component/portal`                                             |
-| Release | `@rc-component/np` / `rc-np`                                       |
+| 方向 | 支持                                             |
+| ---- | ------------------------------------------------ |
+| 定位 | 支持生命周期与容器管理的 React Portal 基础组件。 |
+| 包名 | `@rc-component/portal`                           |
+| 发布 | `@rc-component/np` / `rc-np`                     |
 
-## Install
+## 安装
 
 ```bash
 npm install @rc-component/portal
 ```
 
-## Usage
+## 用法
 
 ```tsx | pure
 import Portal from '@rc-component/portal';
@@ -39,13 +39,13 @@ export default () => <Portal open>Hello World</Portal>;
 
 ## API
 
-| Prop | Description | Type | Default |
+| 名称 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| `getContainer` | Customize portal container. | `Element \| () => Element \| string \| false` | `document.body` |
-| `open` | Whether to render portal content. | `boolean` | `false` |
-| `autoLock` | Lock page scroll when the portal is open. | `boolean` | `false` |
+| `getContainer` | 自定义 Portal 容器。 | `Element \| () => Element \| string \| false` | `document.body` |
+| `open` | 是否渲染 Portal 内容。 | `boolean` | `false` |
+| `autoLock` | Portal 打开时锁定页面滚动。 | `boolean` | `false` |
 
-## Development
+## 本地开发
 
 ```bash
 npm install
@@ -56,16 +56,16 @@ npm run tsc
 npm run compile
 ```
 
-The dumi site runs at `http://localhost:8000`.
+本地 dumi 站点默认运行在 `http://localhost:8000`.
 
-## Release
+## 发布
 
 ```bash
 npm run prepublishOnly
 ```
 
-The release flow is handled by `@rc-component/np` through the `rc-np` command when the package uses the shared release flow.
+发布流程通过 `@rc-component/np` 提供的 `rc-np` 命令处理。
 
-## License
+## 许可证
 
-@rc-component/portal is released under the [MIT](./LICENSE) license.
+@rc-component/portal 基于 [MIT](./LICENSE) 协议发布。

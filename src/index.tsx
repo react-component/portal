@@ -1,3 +1,5 @@
+/* eslint @typescript-eslint/consistent-type-exports: off */
+
 import Portal from './Portal';
 import type { PortalProps } from './Portal';
 import { inlineMock } from './mock';
