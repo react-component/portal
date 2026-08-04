@@ -40,6 +40,8 @@ export interface PortalProps {
   /** Lock screen scroll when open */
   autoLock?: boolean;
   onEsc?: EscCallback;
+  /** Nonce for Content Security Policy */
+  nonce?: string;
 
   /** @private debug name. Do not use in prod */
   debug?: string;
@@ -72,6 +74,7 @@ const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
     autoDestroy = true,
     children,
     onEsc,
+    nonce,
   } = props;
 
   const [shouldRender, setShouldRender] = React.useState(open);
@@ -117,13 +120,14 @@ const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
   const mergedContainer = innerContainer ?? defaultContainer;
 
   // ========================= Locker ==========================
-  useScrollLocker(
+  const shouldLock =
     autoLock &&
-      open &&
-      canUseDom() &&
-      (mergedContainer === defaultContainer ||
-        mergedContainer === document.body),
-  );
+    open &&
+    canUseDom() &&
+    (mergedContainer === defaultContainer ||
+      mergedContainer === document.body);
+
+  useScrollLocker({ lock: shouldLock, nonce });
 
   // ========================= Esc Keydown ==========================
   useEscKeyDown(open, onEsc);

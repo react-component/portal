@@ -11,8 +11,18 @@ const UNIQUE_ID = `rc-util-locker-${Date.now()}`;
 
 let uuid = 0;
 
-export default function useScrollLocker(lock?: boolean) {
-  const mergedLock = !!lock;
+export interface UseScrollLockerOptions {
+  lock?: boolean;
+  nonce?: string;
+}
+
+export default function useScrollLocker(
+  lock?: boolean | UseScrollLockerOptions,
+) {
+  const options = typeof lock === 'object' ? lock : { lock };
+  const mergedLock = !!(typeof lock === 'boolean' ? lock : options.lock);
+  const nonce = typeof lock === 'object' ? lock.nonce : undefined;
+
   const [id] = React.useState(() => {
     uuid += 1;
     return `${UNIQUE_ID}_${uuid}`;
@@ -30,6 +40,9 @@ html body {
   ${isOverflow ? `width: calc(100% - ${scrollbarSize}px);` : ''}
 }`,
         id,
+        {
+          csp: nonce ? { nonce } : undefined,
+        },
       );
     } else {
       removeCSS(id);
@@ -38,5 +51,5 @@ html body {
     return () => {
       removeCSS(id);
     };
-  }, [mergedLock, id]);
+  }, [mergedLock, id, nonce]);
 }
