@@ -216,6 +216,22 @@ describe('Portal', () => {
       expect(portalRef.current).toBeFalsy();
     });
 
+    it.each([
+      ['text', 'Bamboo'],
+      ['number', 0],
+    ])('renders %s children when a ref is provided', (_, children) => {
+      const portalRef = React.createRef();
+
+      render(
+        <Portal ref={portalRef} open>
+          {children}
+        </Portal>,
+      );
+
+      expect(document.body).toHaveTextContent(String(children));
+      expect(portalRef.current).toBeNull();
+    });
+
     it('no warning for React 19 ref', () => {
       const errSpy = jest.spyOn(console, 'error');
       const elementRef = React.createRef<HTMLParagraphElement>();

@@ -1,7 +1,7 @@
 import {
   canUseDom,
   getNodeRef,
-  supportRef,
+  supportNodeRef,
   useComposeRef,
   warning,
 } from '@rc-component/util';
@@ -131,7 +131,9 @@ const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
   // =========================== Ref ===========================
   let childRef: React.Ref<any> = null;
 
-  if (children && supportRef(children) && ref) {
+  const childSupportsRef = supportNodeRef(children);
+
+  if (childSupportsRef && ref) {
     childRef = getNodeRef(children);
   }
 
@@ -148,7 +150,7 @@ const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
   const renderInline = mergedContainer === false || inlineMock();
 
   let reffedChildren = children;
-  if (ref) {
+  if (ref && childSupportsRef) {
     reffedChildren = React.cloneElement(children as any, {
       ref: mergedRef,
     });
