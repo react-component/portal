@@ -93,6 +93,49 @@ describe('Portal', () => {
       expect(container).toMatchSnapshot();
       expect(renderTimes).toEqual(2);
     });
+
+    it('switch container without a redundant render', () => {
+      // The container is re-resolved after every render, but only a changed
+      // one may be stored: React skips a same-value update only while the fiber
+      // has no pending lane, so a no-op right after a real update costs a
+      // render, and under rapid parent re-renders those renders compound into
+      // "Maximum update depth exceeded" (#27).
+      const portal = Portal as unknown as {
+        render: (...args: unknown[]) => React.ReactNode;
+      };
+      const originalRender = portal.render;
+      let portalRenders = 0;
+      portal.render = (...args) => {
+        portalRenders += 1;
+        return originalRender(...args);
+      };
+
+      const first = document.createElement('div');
+      const second = document.createElement('div');
+      document.body.append(first, second);
+
+      const Demo = ({ target }: { target: HTMLElement }) => (
+        <Portal open getContainer={() => target}>
+          <span className="switch-content" />
+        </Portal>
+      );
+
+      try {
+        const { rerender } = render(<Demo target={first} />);
+        expect(first.querySelector('.switch-content')).toBeTruthy();
+
+        portalRenders = 0;
+        rerender(<Demo target={second} />);
+
+        expect(second.querySelector('.switch-content')).toBeTruthy();
+        // The parent's render, plus the one storing the new container.
+        expect(portalRenders).toEqual(2);
+      } finally {
+        portal.render = originalRender;
+        first.remove();
+        second.remove();
+      }
+    });
   });
 
   describe('dynamic change autoLock', () => {

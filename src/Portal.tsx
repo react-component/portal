@@ -99,15 +99,17 @@ const Portal = React.forwardRef<any, PortalProps>((props, ref) => {
   >(() => getPortalContainer(getContainer));
 
   React.useEffect(() => {
-    const customizeContainer = getPortalContainer(getContainer);
-
     // Tell component that we check this in effect which is safe to be `null`
-    setInnerContainer(
-      () =>
-        // React do the state update even the value is the same,
-        // Use function call to force React to compare update
-        customizeContainer ?? null,
-    );
+    const customizeContainer = getPortalContainer(getContainer) ?? null;
+
+    // Re-resolved after every render — a stable `getContainer` may close over a
+    // ref whose element changes — but only a changed container is stored. React
+    // skips a same-value update only while this fiber has no pending lane; once
+    // one lingers, every no-op call schedules a render, and a parent re-rendering
+    // on each keystroke stacks those renders into "Maximum update depth exceeded".
+    if (customizeContainer !== innerContainer) {
+      setInnerContainer(customizeContainer);
+    }
   });
 
   const [defaultContainer, queueCreate] = useDom(
