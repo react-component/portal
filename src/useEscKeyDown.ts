@@ -2,7 +2,11 @@ import { useEvent, useId } from '@rc-component/util';
 import { useEffect, useMemo } from 'react';
 import { type EscCallback } from './Portal';
 
-let stack: { id: string; onEsc?: EscCallback }[] = [];
+// `mounted`: the entry's effect has run. A render pushes provisionally (so a parent lands below its
+// children), but React can throw a render away: in StrictMode (React 18) a mounting component renders
+// twice with a different `useId` each time, and only the second ever runs effects. An entry no effect
+// claimed belongs to a discarded render, so it never takes part in Escape.
+let stack: { id: string; onEsc?: EscCallback; mounted?: boolean }[] = [];
 
 const IME_LOCK_DURATION = 200;
 let lastCompositionEndTime = 0;
@@ -27,9 +31,10 @@ const onGlobalKeyDown = (event: KeyboardEvent) => {
       return;
     }
 
-    const len = stack.length;
+    const live = stack.filter(item => item.mounted);
+    const len = live.length;
     for (let i = len - 1; i >= 0; i -= 1) {
-      stack[i].onEsc({
+      live[i].onEsc({
         top: i === len - 1,
         event,
       });
@@ -58,19 +63,26 @@ export default function useEscKeyDown(open: boolean, onEsc?: EscCallback) {
 
   const onEventEsc = useEvent(onEsc);
 
-  const ensure = () => {
-    if (!stack.find(item => item.id === id)) {
-      stack.push({ id, onEsc: onEventEsc });
+  const ensure = (mounted: boolean) => {
+    const item = stack.find(item => item.id === id);
+    if (!item) {
+      stack.push({ id, onEsc: onEventEsc, mounted });
+    } else if (mounted) {
+      item.mounted = true;
     }
   };
 
   const clear = () => {
     stack = stack.filter(item => item.id !== id);
+    // Nothing live left: entries no effect ever claimed can go too.
+    if (!stack.some(item => item.mounted)) {
+      stack = [];
+    }
   };
 
   useMemo(() => {
     if (open) {
-      ensure();
+      ensure(false);
     } else if (!open) {
       clear();
     }
@@ -78,7 +90,7 @@ export default function useEscKeyDown(open: boolean, onEsc?: EscCallback) {
 
   useEffect(() => {
     if (open) {
-      ensure();
+      ensure(true);
       // Attach global event listeners
       attachGlobalEventListeners();
 

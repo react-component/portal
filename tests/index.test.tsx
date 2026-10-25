@@ -438,6 +438,40 @@ describe('Portal', () => {
       );
     });
 
+    it('a portal that mounts open over another and closes leaves the other top in StrictMode', () => {
+      const onEscA = jest.fn();
+      const onEscB = jest.fn();
+
+      const Demo = ({ child }: { child: boolean }) => (
+        <>
+          <Portal open onEsc={onEscA}>
+            <div />
+          </Portal>
+          {child && (
+            <Portal open onEsc={onEscB}>
+              <div />
+            </Portal>
+          )}
+        </>
+      );
+
+      const { rerender, unmount } = render(<Demo child={false} />, {
+        wrapper: React.StrictMode,
+      });
+      // B mounts already open (a dialog with `destroyOnHidden`), then closes.
+      rerender(<Demo child />);
+      rerender(<Demo child={false} />);
+
+      fireEvent.keyDown(window, { key: 'Escape' });
+
+      expect(onEscA).toHaveBeenCalledWith(
+        expect.objectContaining({ top: true }),
+      );
+
+      unmount();
+      expect(_test().stack).toHaveLength(0);
+    });
+
     it('nested portals should trigger in correct order', () => {
       const onEsc = jest.fn();
       const onEsc2 = jest.fn();
